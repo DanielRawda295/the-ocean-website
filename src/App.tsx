@@ -4,7 +4,9 @@ import { Header } from './components/Header'
 import { Hero } from './components/Hero'
 import { MenuPreview } from './components/MenuPreview'
 import { PhotoGallery } from './components/PhotoGallery'
+import { Reviews } from './components/Reviews'
 import { StorySection } from './components/StorySection'
+import { Faq } from './components/Faq'
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <StorySection />
         <PhotoGallery />
         <MenuPreview />
+        <Reviews />
+        <Faq />
       </main>
       <Footer />
     </div>

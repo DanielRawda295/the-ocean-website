@@ -6,6 +6,8 @@ const photos = [
 ]
 
 export function PhotoGallery() {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <section className="gallery section" id="gallery">
       <div className="page-container">
@@ -15,13 +17,22 @@ export function PhotoGallery() {
         </div>
         <div className="gallery-grid">
           {photos.map((photo, index) => (
-            <figure className={`gallery-card ${photo.className}`} key={photo.src}>
+            <motion.figure
+              className={`gallery-card ${photo.className}`}
+              initial={{ clipPath: shouldReduceMotion ? 'inset(0)' : 'inset(9% 0 0 0)', opacity: 0 }}
+              key={photo.src}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.85, delay: shouldReduceMotion ? 0 : index * 0.09, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: true, amount: 0.2 }}
+              whileInView={{ clipPath: 'inset(0)', opacity: 1 }}
+            >
               <img alt={photo.alt} decoding="async" loading={index === 0 ? 'eager' : 'lazy'} src={photo.src} />
               <figcaption>Seafood selection <span>0{index + 1}</span></figcaption>
-            </figure>
+            </motion.figure>
           ))}
         </div>
       </div>
     </section>
   )
 }
+import { motion, useReducedMotion } from 'motion/react'
+
