@@ -27,7 +27,7 @@ export function Reviews() {
               className="review-card"
               initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
               key={review.id}
-              transition={{ delay: shouldReduceMotion ? 0 : index * 0.1, duration: shouldReduceMotion ? 0 : 0.65, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: shouldReduceMotion ? 0 : (index >= 6 ? index - 6 : index) * 0.07, duration: shouldReduceMotion ? 0 : 0.65, ease: [0.22, 1, 0.36, 1] }}
               viewport={{ once: true, amount: 0.25 }}
               whileHover={shouldReduceMotion ? undefined : { y: -6 }}
               whileInView={{ opacity: 1, y: 0 }}

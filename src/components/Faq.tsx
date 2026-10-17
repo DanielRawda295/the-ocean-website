@@ -20,10 +20,11 @@ export function Faq() {
           {faqs.map((item) => {
             const isOpen = item.id === openId
             const panelId = `${idPrefix}-${item.id}`
+            const buttonId = `${panelId}-button`
             return (
               <article className={`faq-item ${isOpen ? 'faq-item--open' : ''}`} key={item.id}>
                 <h3>
-                  <button aria-controls={panelId} aria-expanded={isOpen} onClick={() => setOpenId(isOpen ? null : item.id)} type="button">
+                  <button aria-controls={panelId} aria-expanded={isOpen} id={buttonId} onClick={() => setOpenId(isOpen ? null : item.id)} type="button">
                     <span>{item.question}</span>
                     <span className="faq-item__icon" aria-hidden="true">
                       {isOpen ? <Minus size={18} strokeWidth={1.6} /> : <Plus size={18} strokeWidth={1.6} />}
@@ -36,6 +37,7 @@ export function Faq() {
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       id={panelId}
+                      aria-labelledby={buttonId}
                       initial={{ height: 0, opacity: 0 }}
                       role="region"
                       transition={{ duration: shouldReduceMotion ? 0 : 0.28, ease: 'easeOut' }}
