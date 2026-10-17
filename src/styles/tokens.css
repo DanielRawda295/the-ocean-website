@@ -1,0 +1,19 @@
+@theme {
+  --color-ocean-navy: #273947;
+  --color-ocean-cream: #f2efe4;
+  --color-ocean-gold: #b99a69;
+  --color-ocean-coral: #c66d50;
+  --color-ocean-ink: #182631;
+  --color-ocean-mist: #d8d7d0;
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-ui: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --navy: #273947;
+  --cream: #f2efe4;
+  --gold: #b99a69;
+  --coral: #c66d50;
+  --ink: #182631;
+  --mist: #d8d7d0;
+}
