@@ -1,9 +1,15 @@
-import type { MenuItem } from '../types/menu'
+import type { MenuItemName, MenuPrice } from '../types/menu'
+
+export interface JournalMenuItem {
+  id: string
+  name: MenuItemName
+  price: MenuPrice
+}
 
 export interface JournalPageData {
   pageNumber: number
   heading: string
-  items: MenuItem[]
+  items: JournalMenuItem[]
   image?: { src: string; caption: string }
   note?: string
 }
@@ -19,7 +25,7 @@ interface BookSpreadProps {
   ariaHidden?: boolean
 }
 
-function formatPrice(item: MenuItem) {
+function formatPrice(item: JournalMenuItem) {
   if (item.price.kind === 'fixed') return `$${item.price.amountUsd}`
   if (item.price.kind === 'per-kilogram') return `$${item.price.amountUsdPerKg} / kg`
   return 'Price on request'
