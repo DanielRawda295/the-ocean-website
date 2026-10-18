@@ -66,11 +66,11 @@ export function MenuPreview({ onOpenMenu }: MenuPreviewProps) {
           <CaptainsLog onOpen={onOpenMenu} />
         </div>
         <Reveal className="menu-preview__content">
-          <p className="eyebrow">Coming next</p>
+          <p className="eyebrow">The Captain&apos;s Log</p>
           <h2>A menu designed like a keepsake.</h2>
-          <p>The digital menu is being shaped into an easy, considered way to browse the current sandwich selection.</p>
+          <p>Browse the current sandwich selection in The Ocean&apos;s Captain&apos;s Log.</p>
           <button className="menu-preview__open-button" type="button" disabled={isOpeningFromCta} onClick={() => setIsOpeningFromCta(true)}>Open the Captain&apos;s Log <ArrowRight aria-hidden="true" size={17} strokeWidth={1.5} /></button>
-          <span className="menu-preview__detail"><Anchor aria-hidden="true" size={15} strokeWidth={1.3} /> Start with its first welcome spread</span>
+          <span className="menu-preview__detail"><Anchor aria-hidden="true" size={15} strokeWidth={1.3} /> Explore the menu at your own pace</span>
         </Reveal>
       </div>
     </section>

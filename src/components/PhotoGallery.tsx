@@ -4,7 +4,7 @@ const photos = [
   { alt: 'Seafood displayed in a chilled selection', src: '/assets/seafood/557053615_18055433036218315_8982209246740493729_n..jpg' },
   { alt: 'Seafood selection in a chilled display', src: '/assets/seafood/670969326_18048368468754697_5399772563993380974_n..jpg' },
   { alt: 'Fresh fish selection', src: '/assets/seafood/fish5.webp' },
-  { alt: 'Seafood dish from the supplied restaurant photography', src: '/assets/seafood/776442970_18066413636754697_7845254103303073647_n..jpg' },
+  { alt: 'Seafood dish from The Ocean restaurant photography', src: '/assets/seafood/776442970_18066413636754697_7845254103303073647_n..jpg' },
   { alt: 'Fresh seafood display', src: '/assets/seafood/850007940_18075472643754697_7158694559172425422_n..jpg' },
 ]
 
@@ -16,7 +16,7 @@ export function PhotoGallery() {
       <div className="page-container">
         <div className="section-heading">
           <div><p className="eyebrow">The visual catch</p><h2>Colours, texture,<br />and the tide.</h2></div>
-          <p>Selected from the restaurant&apos;s supplied photography.</p>
+          <p>A closer look at the seafood and dishes shared by The Ocean.</p>
         </div>
         <div className="gallery-grid">
           {photos.map((photo, index) => (

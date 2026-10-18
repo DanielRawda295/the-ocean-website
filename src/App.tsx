@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ConceptBanner } from './components/ConceptBanner'
+import { DiningSpace } from './components/DiningSpace'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { Hero } from './components/Hero'
@@ -9,6 +9,7 @@ import { PhotoGallery } from './components/PhotoGallery'
 import { Reviews } from './components/Reviews'
 import { StorySection } from './components/StorySection'
 import { Faq } from './components/Faq'
+import { VisitSection } from './components/VisitSection'
 
 function App() {
   const [pathname, setPathname] = useState(() => window.location.pathname)
@@ -54,7 +55,6 @@ function App() {
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <ConceptBanner />
       <Header />
       <main id="main-content" tabIndex={-1}>
         <Hero />
@@ -63,6 +63,8 @@ function App() {
         <MenuPreview onOpenMenu={openMenu} />
         <Reviews />
         <Faq />
+        <DiningSpace />
+        <VisitSection />
       </main>
       <Footer />
     </div>

@@ -17,7 +17,7 @@ export function Reviews() {
         <div className="reviews__heading">
           <p className="eyebrow">Guest reviews</p>
           <h2>Words from<br />our guests.</h2>
-          <p>Customer reviews provided for this concept. Relative posting dates are a supplied snapshot.</p>
+          <p>Customer reviews shared with The Ocean. Relative posting dates are a snapshot.</p>
         </div>
         <div className="reviews__divider" aria-hidden="true"><span /><span /><span /></div>
         <div className="reviews__grid">

@@ -14,7 +14,7 @@ export function Faq() {
         <div className="faq__intro">
           <p className="eyebrow">Useful details</p>
           <h2>A few things<br />you may wonder.</h2>
-          <p>Details shown here are limited to the information confirmed for this concept. For anything else, please check directly with the restaurant.</p>
+          <p>For details not shown here, please contact The Ocean directly.</p>
         </div>
         <div className="faq__items">
           {faqs.map((item) => {
