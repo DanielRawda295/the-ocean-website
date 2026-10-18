@@ -57,7 +57,8 @@ const menuImageSources = spreads.flatMap((spread) => spread.pages.flatMap((page)
 
 export function BookScene({ onClosed }: BookSceneProps) {
   const shouldReduceMotion = useReducedMotion()
-  const requestedCoverAngle = import.meta.env.DEV ? Number(new URLSearchParams(window.location.search).get('coverAngle')) : Number.NaN
+  const coverAngleParam = import.meta.env.DEV ? new URLSearchParams(window.location.search).get('coverAngle') : null
+  const requestedCoverAngle = coverAngleParam === null ? Number.NaN : Number(coverAngleParam)
   const debugCoverAngle = [0, -45, -90, -135, -180].includes(requestedCoverAngle) ? requestedCoverAngle : null
   const [bookState, setBookState] = useState<BookState>('closed')
   const [spreadIndex, setSpreadIndex] = useState(0)
