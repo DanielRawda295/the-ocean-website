@@ -111,8 +111,6 @@ export function BookScene({ onClosed }: BookSceneProps) {
       <div className="book-scene__atmosphere" aria-hidden="true" />
       <div className="book-scene__object">
         <div className="book-scene__spine" aria-hidden="true" />
-        <div className="book-scene__page-stack book-scene__page-stack--left" aria-hidden="true" />
-        <div className="book-scene__page-stack book-scene__page-stack--right" aria-hidden="true" />
         <div className="book-scene__papers" aria-hidden={bookState === 'closed' || undefined}>
           {bookState === 'turning' && pendingSpreadIndex !== null ? (
             <div className="book-page-layers" aria-hidden="true">

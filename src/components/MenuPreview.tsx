@@ -1,6 +1,7 @@
 import { Anchor, ArrowRight } from 'lucide-react'
 import { useInView, useReducedMotion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
+import type { SyntheticEvent } from 'react'
 import { heroPosterSrc, heroVideoSrc } from '../data/media'
 import { CaptainsLog } from './CaptainsLog'
 import { Reveal } from './Reveal'
@@ -12,10 +13,30 @@ interface MenuPreviewProps {
 export function MenuPreview({ onOpenMenu }: MenuPreviewProps) {
   const shouldReduceMotion = useReducedMotion()
   const sectionRef = useRef<HTMLElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const isInView = useInView(sectionRef, { amount: 0.25 })
   const [videoUnavailable, setVideoUnavailable] = useState(false)
   const [isOpeningFromCta, setIsOpeningFromCta] = useState(false)
-  const showVideo = Boolean(heroVideoSrc) && isInView && !shouldReduceMotion && !videoUnavailable
+  const showVideo = Boolean(heroVideoSrc) && !shouldReduceMotion && !videoUnavailable
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !showVideo) return
+
+    if (isInView) {
+      void video.play().catch(() => {
+        // Autoplay rejection is not a media failure; keep the mounted poster/video state intact.
+      })
+    } else {
+      video.pause()
+    }
+  }, [isInView, showVideo])
+
+  const handleVideoError = (event: SyntheticEvent<HTMLVideoElement>) => {
+    const code = event.currentTarget.error?.code
+    if (import.meta.env.DEV) console.error('Menu teaser video playback failed', { code, src: event.currentTarget.currentSrc })
+    if (code === MediaError.MEDIA_ERR_DECODE || code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) setVideoUnavailable(true)
+  }
 
   useEffect(() => {
     if (!isOpeningFromCta) return undefined
@@ -29,7 +50,7 @@ export function MenuPreview({ onOpenMenu }: MenuPreviewProps) {
       <div className={`page-container menu-preview__panel${isOpeningFromCta ? ' menu-preview__panel--opening' : ''}`}>
         <div className="menu-preview__media" aria-hidden="true">
           {showVideo ? (
-            <video autoPlay loop muted onError={() => setVideoUnavailable(true)} playsInline poster={heroPosterSrc} preload="metadata">
+            <video ref={videoRef} autoPlay loop muted onError={handleVideoError} playsInline poster={heroPosterSrc} preload="metadata">
               <source src={heroVideoSrc} type="video/mp4" />
             </video>
           ) : <img alt="" decoding="async" loading="lazy" src={heroPosterSrc} />}

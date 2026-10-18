@@ -1,19 +1,34 @@
 import { ArrowDownRight, Compass } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { SyntheticEvent } from 'react'
 import { heroPosterSrc, heroVideoSrc } from '../data/media'
 
 export function Hero() {
   const shouldReduceMotion = useReducedMotion()
   const [videoUnavailable, setVideoUnavailable] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const headlineWords = ['From the', 'sea.', 'To your', 'plate.']
   const showVideo = Boolean(heroVideoSrc) && !shouldReduceMotion && !videoUnavailable
+
+  useEffect(() => {
+    if (!showVideo || !videoRef.current) return
+    void videoRef.current.play().catch(() => {
+      // Muted autoplay can be deferred by a browser without making the MP4 unavailable.
+    })
+  }, [showVideo])
+
+  const handleVideoError = (event: SyntheticEvent<HTMLVideoElement>) => {
+    const code = event.currentTarget.error?.code
+    if (import.meta.env.DEV) console.error('Hero video playback failed', { code, src: event.currentTarget.currentSrc })
+    if (code === MediaError.MEDIA_ERR_DECODE || code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) setVideoUnavailable(true)
+  }
 
   return (
     <section className="hero" id="top">
       <div className="hero__media" aria-hidden="true">
         {showVideo ? (
-          <video autoPlay loop muted onError={() => setVideoUnavailable(true)} playsInline poster={heroPosterSrc} preload="metadata">
+          <video ref={videoRef} autoPlay loop muted onError={handleVideoError} playsInline poster={heroPosterSrc} preload="metadata">
             <source src={heroVideoSrc} type="video/mp4" />
           </video>
         ) : (

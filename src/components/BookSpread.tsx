@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { MenuItemName, MenuPrice } from '../types/menu'
 
 export interface JournalMenuItem { id: string; name: MenuItemName; price: MenuPrice }
@@ -14,12 +15,25 @@ function formatPrice(item: JournalMenuItem) {
   return 'Price on request'
 }
 
-export function JournalPage({ page }: { page: JournalPageData }) {
-  if (page.kind === 'photo') {
-    return <article className="journal-page journal-page--feature"><span className="journal-page__number" aria-hidden="true">{String(page.pageNumber).padStart(2, '0')}</span><p className="journal-page__eyebrow">{page.heading}</p><figure className="journal-page__feature-media"><img alt="" src={page.image.src} /><figcaption>{page.image.caption}</figcaption></figure><span className="journal-page__corner" aria-hidden="true" /></article>
+function JournalImage({ src, caption }: { src: string; caption: string }) {
+  const [failed, setFailed] = useState(false)
+
+  if (failed) {
+    return <div className="journal-page__image-fallback" role="img" aria-label={`${caption} image unavailable`}>Image unavailable</div>
   }
 
-  return <article className="journal-page"><span className="journal-page__number" aria-hidden="true">{String(page.pageNumber).padStart(2, '0')}</span>{page.image && <figure className="journal-page__media"><img alt="" src={page.image.src} /><figcaption>{page.image.caption}</figcaption></figure>}<p className="journal-page__eyebrow">{page.heading}</p><ul className="journal-page__list">{page.items.map((item) => <li key={item.id}><span>{item.name.en}</span><i aria-hidden="true" /><strong>{formatPrice(item)}</strong></li>)}</ul>{page.note && <p className="journal-page__note">{page.note}</p>}<span className="journal-page__corner" aria-hidden="true" /></article>
+  return <img alt="" src={src} onError={(event) => {
+    if (import.meta.env.DEV) console.error(`Captain's Log image failed to load: ${src}`, event.currentTarget.currentSrc)
+    setFailed(true)
+  }} />
+}
+
+export function JournalPage({ page }: { page: JournalPageData }) {
+  if (page.kind === 'photo') {
+    return <article className="journal-page journal-page--feature"><span className="journal-page__number" aria-hidden="true">{String(page.pageNumber).padStart(2, '0')}</span><p className="journal-page__eyebrow">{page.heading}</p><figure className="journal-page__feature-media"><JournalImage src={page.image.src} caption={page.image.caption} /><figcaption>{page.image.caption}</figcaption></figure><span className="journal-page__corner" aria-hidden="true" /></article>
+  }
+
+  return <article className="journal-page"><span className="journal-page__number" aria-hidden="true">{String(page.pageNumber).padStart(2, '0')}</span>{page.image && <figure className="journal-page__media"><JournalImage src={page.image.src} caption={page.image.caption} /><figcaption>{page.image.caption}</figcaption></figure>}<p className="journal-page__eyebrow">{page.heading}</p><ul className="journal-page__list">{page.items.map((item) => <li key={item.id}><span>{item.name.en}</span><i aria-hidden="true" /><strong>{formatPrice(item)}</strong></li>)}</ul>{page.note && <p className="journal-page__note">{page.note}</p>}<span className="journal-page__corner" aria-hidden="true" /></article>
 }
 
 export function BookSpread({ spread, labelledBy, ariaHidden = false }: BookSpreadProps) {
