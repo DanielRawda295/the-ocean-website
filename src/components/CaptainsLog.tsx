@@ -29,7 +29,7 @@ export function CaptainsLog({ onOpen }: CaptainsLogProps) {
       aria-busy={isOpening}
       disabled={isOpening}
       onClick={openBook}
-      animate={isOpening && !shouldReduceMotion ? { opacity: 0, scale: 0.97, y: -8 } : { opacity: 1, scale: 1, y: 0 }}
+      animate={isOpening && !shouldReduceMotion ? { scale: 0.97, y: -8 } : { scale: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
     >
       <span className="captains-log-trigger__spine" aria-hidden="true" />

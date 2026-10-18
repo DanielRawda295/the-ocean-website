@@ -19,29 +19,36 @@ const spreads: BookSpreadData[] = [
   {
     index: 0,
     pages: [
-      { pageNumber: 1, heading: 'Shrimp Sandwiches', items: menuItems.slice(0, 4), image: { src: '/assets/sandwiches/sandwich-1.webp', caption: 'Sandwich selection' } },
-      { pageNumber: 2, heading: 'Felleh Sandwiches', items: menuItems.slice(4, 8), image: { src: '/assets/sandwiches/sandwich-2.webp', caption: 'Sandwich selection' } },
+      { kind: 'menu', pageNumber: 1, heading: 'Shrimp Sandwiches', items: menuItems.slice(0, 4), image: { src: '/assets/sandwiches/sandwich-1.webp', caption: 'Sandwich selection' } },
+      { kind: 'menu', pageNumber: 2, heading: 'Felleh Sandwiches', items: menuItems.slice(4, 8), image: { src: '/assets/sandwiches/sandwich-2.webp', caption: 'Sandwich selection' } },
     ],
   },
   {
     index: 1,
     pages: [
-      { pageNumber: 3, heading: 'Fresh Fish', items: conceptFishItems.slice(0, 4), image: { src: '/assets/seafood/fish2.webp', caption: 'Seafood selection' }, note: conceptFishNotice },
-      { pageNumber: 4, heading: 'Fresh Fish', items: conceptFishItems.slice(4, 8), image: { src: '/assets/seafood/fish4.webp', caption: 'Seafood selection' }, note: conceptFishNotice },
+      { kind: 'menu', pageNumber: 3, heading: 'Fresh Fish', items: conceptFishItems.slice(0, 4), image: { src: '/assets/seafood/fish2.webp', caption: 'Seafood selection' }, note: conceptFishNotice },
+      { kind: 'menu', pageNumber: 4, heading: 'Fresh Fish', items: conceptFishItems.slice(4, 8), image: { src: '/assets/seafood/fish4.webp', caption: 'Seafood selection' }, note: conceptFishNotice },
     ],
   },
   {
     index: 2,
     pages: [
-      { pageNumber: 5, heading: 'Fish & Chips', items: bySection('Fish & Chips'), image: { src: '/assets/seafood/plate1.webp', caption: 'Seafood selection' }, note: conceptMenuNotice },
-      { pageNumber: 6, heading: 'Seafood Platters', items: bySection('Seafood Platters'), image: { src: '/assets/seafood/776442970_18066413636754697_7845254103303073647_n..jpg', caption: 'Seafood selection' }, note: conceptMenuNotice },
+      { kind: 'photo', pageNumber: 5, heading: 'Fresh Fish Selection', image: { src: '/assets/seafood/fish4.webp', caption: 'Fresh Fish Selection' } },
+      { kind: 'photo', pageNumber: 6, heading: 'Fresh Fish Selection', image: { src: '/assets/seafood/fish5.webp', caption: 'Fresh Fish Selection' } },
     ],
   },
   {
     index: 3,
     pages: [
-      { pageNumber: 7, heading: 'Sides', items: bySection('Sides'), note: conceptMenuNotice },
-      { pageNumber: 8, heading: 'Soft Drinks', items: bySection('Soft Drinks'), note: conceptMenuNotice },
+      { kind: 'menu', pageNumber: 7, heading: 'Fish & Chips', items: bySection('Fish & Chips'), image: { src: '/assets/seafood/plate1.webp', caption: 'Seafood selection' }, note: conceptMenuNotice },
+      { kind: 'menu', pageNumber: 8, heading: 'Seafood Platters', items: bySection('Seafood Platters'), image: { src: '/assets/seafood/776442970_18066413636754697_7845254103303073647_n..jpg', caption: 'Seafood selection' }, note: conceptMenuNotice },
+    ],
+  },
+  {
+    index: 4,
+    pages: [
+      { kind: 'menu', pageNumber: 9, heading: 'Sides', items: bySection('Sides'), note: conceptMenuNotice },
+      { kind: 'menu', pageNumber: 10, heading: 'Soft Drinks', items: bySection('Soft Drinks'), note: conceptMenuNotice },
     ],
   },
 ]
@@ -71,10 +78,8 @@ export function BookScene({ onClosed }: BookSceneProps) {
 
   const coverDuration = shouldReduceMotion ? 0 : bookState === 'closing' ? 2 : 2.35
   const turnDuration = shouldReduceMotion ? 0 : 1
-  const baseSpreadIndex = bookState === 'turning' && pendingSpreadIndex !== null ? pendingSpreadIndex : spreadIndex
-  const baseSpread = spreads[baseSpreadIndex]
   const outgoingSpread = spreads[spreadIndex]
-  const incomingSpread = pendingSpreadIndex === null ? baseSpread : spreads[pendingSpreadIndex]
+  const incomingSpread = pendingSpreadIndex === null ? outgoingSpread : spreads[pendingSpreadIndex]
   const isInteractive = bookState === 'open'
 
   const handleCoverComplete = () => {
@@ -108,9 +113,14 @@ export function BookScene({ onClosed }: BookSceneProps) {
         <div className="book-scene__spine" aria-hidden="true" />
         <div className="book-scene__page-stack book-scene__page-stack--left" aria-hidden="true" />
         <div className="book-scene__page-stack book-scene__page-stack--right" aria-hidden="true" />
-        <div className="book-scene__papers">
-          <BookSpread key={`base-${baseSpread.index}`} spread={baseSpread} labelledBy="captains-log-heading" ariaHidden={bookState === 'closed'} />
-        </div>
+        {bookState !== 'closed' && <div className="book-scene__papers">
+          {bookState === 'turning' && pendingSpreadIndex !== null ? (
+            <div className="book-page-layers" aria-hidden="true">
+              <div className="book-page-layer book-page-layer--left"><JournalPage page={turnDirection === 'next' ? outgoingSpread.pages[0] : incomingSpread.pages[0]} /></div>
+              <div className="book-page-layer book-page-layer--right"><JournalPage page={turnDirection === 'next' ? incomingSpread.pages[1] : outgoingSpread.pages[1]} /></div>
+            </div>
+          ) : <BookSpread key={`base-${outgoingSpread.index}`} spread={outgoingSpread} labelledBy="captains-log-heading" />}
+        </div>}
 
         <motion.div
           className="book-cover-3d"
