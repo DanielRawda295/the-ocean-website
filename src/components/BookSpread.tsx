@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { MenuItemName, MenuPrice } from '../types/menu'
 import { cartStore } from '../store/cartStore'
+import { dispatchCatchEffect } from '../store/cartEffects'
 
 export interface JournalMenuItem { id: string; name: MenuItemName; price: MenuPrice; verification?: 'confirmed' | 'concept' }
 export interface MenuListPage { kind: 'menu'; pageNumber: number; heading: string; items: JournalMenuItem[]; image?: { src: string; caption: string }; note?: string }
@@ -19,7 +20,11 @@ function formatPrice(item: JournalMenuItem) {
 function getItemControl(item: JournalMenuItem) {
   if (item.verification === 'confirmed' && item.price.kind === 'fixed') {
     const unitPrice = item.price.amountUsd
-    return <button className="journal-page__add" type="button" onClick={() => cartStore.addItem({ id: item.id, name: item.name.en, unitPrice, verification: 'confirmed' })}>Add to Boat</button>
+    return <button className="journal-page__add" type="button" onClick={(event) => {
+      const bounds = event.currentTarget.getBoundingClientRect()
+      dispatchCatchEffect({ productId: item.id, origin: { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 } })
+      cartStore.addItem({ id: item.id, name: item.name.en, unitPrice, verification: 'confirmed' })
+    }}>Add to Boat</button>
   }
   if (item.verification === 'concept') return <span className="journal-page__concept-item">Concept item</span>
   return null
