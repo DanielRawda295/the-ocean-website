@@ -1,161 +1,146 @@
-import { ChevronLeft, ChevronRight, Compass } from 'lucide-react'
-import { motion, useReducedMotion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { Minus, Plus, RotateCcw, ChevronLeft, ChevronRight, Compass } from 'lucide-react'
+import { PageFlip, type PageFlipState } from 'page-flip'
+import { createRoot, type Root } from 'react-dom/client'
+import { flushSync } from 'react-dom'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { conceptFishItems, conceptFishNotice } from '../data/conceptFish'
 import { conceptMenuItems, conceptMenuNotice } from '../data/conceptMenu'
 import { menuItems } from '../data/menu'
-import { BookSpread, JournalPage, type BookSpreadData } from './BookSpread'
+import { JournalPage, type BookSpreadData, type JournalPageData } from './BookSpread'
 
-type BookState = 'closed' | 'opening' | 'open' | 'turning' | 'closing'
-type TurnDirection = 'next' | 'previous'
-
-interface BookSceneProps {
-  onClosed: () => void
-}
+interface BookSceneProps { onClosed: () => void }
 
 const bySection = (section: string) => conceptMenuItems.filter((item) => item.section === section)
 
 const spreads: BookSpreadData[] = [
-  {
-    index: 0,
-    pages: [
-      { kind: 'menu', pageNumber: 1, heading: 'Shrimp Sandwiches', items: menuItems.slice(0, 4), image: { src: '/assets/sandwiches/sandwich-1.webp', caption: 'Sandwich selection' } },
-      { kind: 'menu', pageNumber: 2, heading: 'Felleh Sandwiches', items: menuItems.slice(4, 8), image: { src: '/assets/sandwiches/sandwich-2.webp', caption: 'Sandwich selection' } },
-    ],
-  },
-  {
-    index: 1,
-    pages: [
-      { kind: 'menu', pageNumber: 3, heading: 'Fresh Fish', items: conceptFishItems.slice(0, 4), image: { src: '/assets/seafood/fish2.webp', caption: 'Seafood selection' }, note: conceptFishNotice },
-      { kind: 'menu', pageNumber: 4, heading: 'Fresh Fish', items: conceptFishItems.slice(4, 8), image: { src: '/assets/seafood/fish4.webp', caption: 'Seafood selection' }, note: conceptFishNotice },
-    ],
-  },
-  {
-    index: 2,
-    pages: [
-      { kind: 'photo', pageNumber: 5, heading: 'Fresh Fish Selection', image: { src: '/assets/seafood/fish4.webp', caption: 'Fresh Fish Selection' } },
-      { kind: 'photo', pageNumber: 6, heading: 'Fresh Fish Selection', image: { src: '/assets/seafood/fish5.webp', caption: 'Fresh Fish Selection' } },
-    ],
-  },
-  {
-    index: 3,
-    pages: [
-      { kind: 'menu', pageNumber: 7, heading: 'Fish & Chips', items: bySection('Fish & Chips'), image: { src: '/assets/seafood/plate1.webp', caption: 'Seafood selection' }, note: conceptMenuNotice },
-      { kind: 'menu', pageNumber: 8, heading: 'Seafood Platters', items: bySection('Seafood Platters'), image: { src: '/assets/seafood/776442970_18066413636754697_7845254103303073647_n..jpg', caption: 'Seafood selection' }, note: conceptMenuNotice },
-    ],
-  },
-  {
-    index: 4,
-    pages: [
-      { kind: 'menu', pageNumber: 9, heading: 'Sides', items: bySection('Sides'), note: conceptMenuNotice },
-      { kind: 'menu', pageNumber: 10, heading: 'Soft Drinks', items: bySection('Soft Drinks'), note: conceptMenuNotice },
-    ],
-  },
+  { index: 0, pages: [{ kind: 'menu', pageNumber: 1, heading: 'Shrimp Sandwiches', items: menuItems.slice(0, 4), image: { src: '/assets/sandwiches/sandwich-1.webp', caption: 'Sandwich selection' } }, { kind: 'menu', pageNumber: 2, heading: 'Felleh Sandwiches', items: menuItems.slice(4, 8), image: { src: '/assets/sandwiches/sandwich-2.webp', caption: 'Sandwich selection' } }] },
+  { index: 1, pages: [{ kind: 'menu', pageNumber: 3, heading: 'Fresh Fish', items: conceptFishItems.slice(0, 4), image: { src: '/assets/seafood/fish2.webp', caption: 'Seafood selection' }, note: conceptFishNotice }, { kind: 'menu', pageNumber: 4, heading: 'Fresh Fish', items: conceptFishItems.slice(4, 8), image: { src: '/assets/seafood/fish4.webp', caption: 'Seafood selection' }, note: conceptFishNotice }] },
+  { index: 2, pages: [{ kind: 'photo', pageNumber: 5, heading: 'Fresh Fish Selection', image: { src: '/assets/seafood/fish4.webp', caption: 'Fresh Fish Selection' } }, { kind: 'photo', pageNumber: 6, heading: 'Fresh Fish Selection', image: { src: '/assets/seafood/fish5.webp', caption: 'Fresh Fish Selection' } }] },
+  { index: 3, pages: [{ kind: 'menu', pageNumber: 7, heading: 'Fish & Chips', items: bySection('Fish & Chips'), image: { src: '/assets/seafood/plate1.webp', caption: 'Seafood selection' }, note: conceptMenuNotice }, { kind: 'menu', pageNumber: 8, heading: 'Seafood Platters', items: bySection('Seafood Platters'), image: { src: '/assets/seafood/776442970_18066413636754697_7845254103303073647_n..jpg', caption: 'Seafood selection' }, note: conceptMenuNotice }] },
+  { index: 4, pages: [{ kind: 'menu', pageNumber: 9, heading: 'Sides', items: bySection('Sides'), note: conceptMenuNotice }, { kind: 'menu', pageNumber: 10, heading: 'Soft Drinks', items: bySection('Soft Drinks'), note: conceptMenuNotice }] },
 ]
 
-const menuImageSources = spreads.flatMap((spread) => spread.pages.flatMap((page) => page.image ? [page.image.src] : []))
+const journalPages = spreads.flatMap((spread) => spread.pages)
+
+function CoverPage({ rear = false }: { rear?: boolean }) {
+  return <article className={`flipbook-page flipbook-cover${rear ? ' flipbook-cover--rear' : ''}`} data-density="hard" aria-label={rear ? 'Captain’s Log rear cover' : 'Captain’s Log front cover'}>
+    <span className="flipbook-cover__border" aria-hidden="true" />
+    {!rear && <><img alt="" src="/assets/brand/the-ocean-logo.jpg" /><span>The Ocean</span><strong>The Captain&apos;s<br />Log</strong><Compass aria-hidden="true" size={42} strokeWidth={1} /><small>Open the Captain&apos;s Log</small></>}
+  </article>
+}
+
+function InteriorPage({ page }: { page: JournalPageData }) {
+  return <div className="flipbook-page flipbook-page--paper"><JournalPage page={page} /></div>
+}
+
+function FlipbookPages() {
+  return <><CoverPage />{journalPages.map((page) => <InteriorPage key={page.pageNumber} page={page} />)}<CoverPage rear /></>
+}
+
+async function waitForBookImages(host: HTMLElement) {
+  const images = Array.from(host.querySelectorAll('img'))
+  await Promise.all(images.map(async (image) => {
+    if (!image.complete) await new Promise<void>((resolve) => { image.addEventListener('load', () => resolve(), { once: true }); image.addEventListener('error', () => resolve(), { once: true }) })
+    try { await image.decode() } catch { /* Per-image fallback handles a decode/load failure. */ }
+  }))
+}
 
 export function BookScene({ onClosed }: BookSceneProps) {
-  const shouldReduceMotion = useReducedMotion()
-  const coverAngleParam = import.meta.env.DEV ? new URLSearchParams(window.location.search).get('coverAngle') : null
-  const requestedCoverAngle = coverAngleParam === null ? Number.NaN : Number(coverAngleParam)
-  const debugCoverAngle = [0, -45, -90, -135, -180].includes(requestedCoverAngle) ? requestedCoverAngle : null
-  const [bookState, setBookState] = useState<BookState>('closed')
-  const [spreadIndex, setSpreadIndex] = useState(0)
-  const [pendingSpreadIndex, setPendingSpreadIndex] = useState<number | null>(null)
-  const [turnDirection, setTurnDirection] = useState<TurnDirection>('next')
+  const stageRef = useRef<HTMLDivElement>(null)
+  const pageFlipRef = useRef<PageFlip | null>(null)
+  const closingRef = useRef(false)
+  const [pageIndex, setPageIndex] = useState(0)
+  const [flipState, setFlipState] = useState<PageFlipState>('read')
+  const [zoom, setZoom] = useState(1)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    const images = menuImageSources.map((src) => {
-      const image = new Image()
-      image.src = src
-      return image
-    })
-    return () => { images.forEach((image) => { image.src = '' }) }
-  }, [])
+    const stage = stageRef.current
+    if (!stage) return undefined
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => setBookState('opening'), shouldReduceMotion ? 0 : 420)
-    return () => window.clearTimeout(timer)
-  }, [shouldReduceMotion])
+    const host = document.createElement('div')
+    host.className = 'flipbook-host'
+    stage.appendChild(host)
+    const root: Root = createRoot(host)
+    flushSync(() => root.render(<FlipbookPages />))
+    let destroyed = false
 
-  const coverDuration = shouldReduceMotion ? 0 : bookState === 'closing' ? 2 : 2.35
-  const coverRotation = debugCoverAngle ?? (bookState === 'closed' || bookState === 'closing' ? 0 : -180)
-  const turnDuration = shouldReduceMotion ? 0 : 1
-  const outgoingSpread = spreads[spreadIndex]
-  const incomingSpread = pendingSpreadIndex === null ? outgoingSpread : spreads[pendingSpreadIndex]
-  const isInteractive = bookState === 'open'
+    const initialise = async () => {
+      await document.fonts?.ready
+      await waitForBookImages(host)
+      if (destroyed) return
 
-  const handleCoverComplete = () => {
-    if (bookState === 'opening') setBookState('open')
-    if (bookState === 'closing') onClosed()
-  }
-
-  const turnPage = (direction: TurnDirection) => {
-    const target = direction === 'next' ? spreadIndex + 1 : spreadIndex - 1
-    if (bookState === 'open' && target >= 0 && target < spreads.length) {
-      setTurnDirection(direction)
-      setPendingSpreadIndex(target)
-      setBookState('turning')
+      const pageFlip = new PageFlip(host, {
+        width: 500,
+        height: 680,
+        size: 'stretch',
+        minWidth: 280,
+        maxWidth: 500,
+        minHeight: 390,
+        maxHeight: 680,
+        showCover: true,
+        drawShadow: true,
+        maxShadowOpacity: 0.28,
+        flippingTime: 1150,
+        usePortrait: true,
+        startZIndex: 10,
+        autoSize: true,
+        useMouseEvents: false,
+      })
+      pageFlip.on('flip', ({ data }) => setPageIndex(data))
+      pageFlip.on('changeState', ({ data }) => {
+        setFlipState(data)
+        if (data !== 'read') return
+        if (closingRef.current) {
+          if (pageFlip.getCurrentPageIndex() === 0) onClosed()
+          else pageFlip.flipPrev('top')
+        }
+      })
+      pageFlip.on('init', () => {
+        setReady(true)
+        pageFlip.flipNext('top')
+      })
+      pageFlip.loadFromHTML(Array.from(host.querySelectorAll<HTMLElement>('.flipbook-page')))
+      pageFlipRef.current = pageFlip
     }
-  }
 
-  const handleTurnComplete = () => {
-    if (pendingSpreadIndex !== null) setSpreadIndex(pendingSpreadIndex)
-    setPendingSpreadIndex(null)
-    setBookState('open')
-  }
+    void initialise()
+    return () => {
+      destroyed = true
+      pageFlipRef.current?.destroy()
+      pageFlipRef.current = null
+      root.unmount()
+    }
+  }, [onClosed])
 
+  const canNavigate = ready && flipState === 'read' && !closingRef.current
+  const flipNext = () => { if (canNavigate) pageFlipRef.current?.flipNext('top') }
+  const flipPrevious = () => { if (canNavigate && pageIndex > 0) pageFlipRef.current?.flipPrev('top') }
   const closeBook = () => {
-    if (bookState === 'open') setBookState('closing')
+    if (!canNavigate || !pageFlipRef.current) return
+    closingRef.current = true
+    setFlipState('flipping')
+    if (pageFlipRef.current.getCurrentPageIndex() === 0) onClosed()
+    else pageFlipRef.current.flipPrev('top')
   }
+  const changeZoom = (delta: number) => { if (flipState === 'read') setZoom((value) => Math.min(1.5, Math.max(.8, Number((value + delta).toFixed(2))))) }
 
-  return (
-    <section className={`book-scene book-scene--${bookState}`} aria-labelledby="captains-log-heading">
-      <div className="book-scene__atmosphere" aria-hidden="true" />
-      <div className="book-scene__object">
-        <div className="book-back-cover" aria-hidden="true" />
-        <div className="book-scene__spine" aria-hidden="true" />
-        <div className="book-scene__papers">
-          {bookState === 'turning' && pendingSpreadIndex !== null ? (
-            <div className="book-page-layers" aria-hidden="true">
-              <div className="book-page-layer book-page-layer--left"><JournalPage page={turnDirection === 'next' ? outgoingSpread.pages[0] : incomingSpread.pages[0]} /></div>
-              <div className="book-page-layer book-page-layer--right"><JournalPage page={turnDirection === 'next' ? incomingSpread.pages[1] : outgoingSpread.pages[1]} /></div>
-            </div>
-          ) : <BookSpread key={`base-${outgoingSpread.index}`} spread={outgoingSpread} labelledBy="captains-log-heading" />}
-        </div>
-
-        <motion.div
-          className="book-cover-hinge"
-          initial={false}
-          animate={{ rotateY: coverRotation }}
-          transition={{ duration: coverDuration, ease: [0.18, 0.8, 0.24, 1] }}
-          onAnimationComplete={handleCoverComplete}
-          aria-hidden="true"
-        >
-          <div className="book-cover-3d">
-            <div className="book-cover-3d__outside"><span className="book-cover-3d__border" /><img alt="" src="/assets/brand/the-ocean-logo.jpg" /><span>The Ocean</span><strong>The Captain&apos;s<br />Log</strong><Compass size={42} strokeWidth={1} /></div>
-            <div className="book-cover-3d__inside"><span className="book-cover-3d__border" /><Compass size={72} strokeWidth={.8} /><span>Captain&apos;s Log</span><small>The Ocean</small></div>
-            <span className="book-cover-3d__shadow" />
-          </div>
-        </motion.div>
-
-        {bookState === 'turning' && pendingSpreadIndex !== null && (
-          <motion.div key={`${turnDirection}-${spreadIndex}-${pendingSpreadIndex}`} className={`turning-sheet turning-sheet--${turnDirection}`} initial={{ rotateY: 0 }} animate={{ rotateY: turnDirection === 'next' ? -180 : 180 }} transition={{ duration: turnDuration, ease: [0.36, 0, 0.2, 1] }} onAnimationComplete={handleTurnComplete} aria-hidden="true">
-            <div className="turning-sheet__front"><JournalPage page={turnDirection === 'next' ? outgoingSpread.pages[1] : outgoingSpread.pages[0]} /></div>
-            <div className="turning-sheet__back"><JournalPage page={turnDirection === 'next' ? incomingSpread.pages[0] : incomingSpread.pages[1]} /></div>
-            <span className="turning-sheet__shadow" />
-          </motion.div>
-        )}
-      </div>
-
-      <div className="book-scene__heading"><p className="eyebrow">The Ocean</p><h1 id="captains-log-heading">The Captain&apos;s Log</h1><p>Confirmed sandwiches and concept menu estimates.</p></div>
-      <nav className="book-scene__controls" aria-label="Captain's Log controls">
-        <button type="button" onClick={() => turnPage('previous')} disabled={!isInteractive || spreadIndex === 0}><ChevronLeft aria-hidden="true" size={18} />Previous page</button>
-        <span aria-live="polite">Spread {spreadIndex + 1} of {spreads.length}</span>
-        <button type="button" onClick={() => turnPage('next')} disabled={!isInteractive || spreadIndex === spreads.length - 1}>Next page<ChevronRight aria-hidden="true" size={18} /></button>
-      </nav>
-      <button className="book-scene__close" type="button" onClick={closeBook} disabled={!isInteractive}>Close the Captain&apos;s Log</button>
-    </section>
-  )
+  return <section className="book-scene book-scene--flipbook" aria-labelledby="captains-log-heading">
+    <div className="book-scene__atmosphere" aria-hidden="true" />
+    <div className="book-scene__heading"><p className="eyebrow">The Ocean</p><h1 id="captains-log-heading">The Captain&apos;s Log</h1><p>Confirmed sandwiches and concept menu estimates.</p></div>
+    <div className="flipbook-camera" style={{ '--flipbook-zoom': zoom } as CSSProperties}>
+      <div className="flipbook-stage" ref={stageRef} aria-busy={!ready} aria-label="Captain’s Log menu book" />
+    </div>
+    <nav className="book-scene__controls" aria-label="Captain's Log controls">
+      <button type="button" onClick={flipPrevious} disabled={!canNavigate || pageIndex === 0}><ChevronLeft aria-hidden="true" size={18} />Previous page</button>
+      <span aria-live="polite">Page {pageIndex + 1} of {journalPages.length + 2}</span>
+      <button type="button" onClick={flipNext} disabled={!canNavigate || pageIndex >= journalPages.length + 1}>Next page<ChevronRight aria-hidden="true" size={18} /></button>
+    </nav>
+    <div className="flipbook-zoom" aria-label="Book zoom controls">
+      <button type="button" onClick={() => changeZoom(-.1)} disabled={flipState !== 'read' || zoom <= .8} aria-label="Zoom out"><Minus aria-hidden="true" size={17} /></button>
+      <button type="button" onClick={() => changeZoom(.1)} disabled={flipState !== 'read' || zoom >= 1.5} aria-label="Zoom in"><Plus aria-hidden="true" size={17} /></button>
+      <button type="button" onClick={() => setZoom(1)} disabled={flipState !== 'read' || zoom === 1} aria-label="Reset zoom"><RotateCcw aria-hidden="true" size={16} /></button>
+    </div>
+    <button className="book-scene__close" type="button" onClick={closeBook} disabled={!canNavigate}>Close the Captain&apos;s Log</button>
+  </section>
 }
