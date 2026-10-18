@@ -7,17 +7,22 @@ import { conceptFishItems, conceptFishNotice } from '../data/conceptFish'
 import { conceptMenuItems, conceptMenuNotice } from '../data/conceptMenu'
 import { menuItems } from '../data/menu'
 import { JournalPage, type BookSpreadData, type JournalPageData } from './BookSpread'
+import type { MenuItemName, MenuPrice } from '../types/menu'
+import { FishingBoatCart } from './FishingBoatCart'
 
 interface BookSceneProps { onClosed: () => void }
 
 const bySection = (section: string) => conceptMenuItems.filter((item) => item.section === section)
+type JournalSourceItem = { id: string; name: MenuItemName; price: MenuPrice }
+const confirmedItems = (items: JournalSourceItem[]) => items.map((item) => ({ id: item.id, name: item.name, price: item.price, verification: 'confirmed' as const }))
+const conceptItems = (items: JournalSourceItem[]) => items.map((item) => ({ id: item.id, name: item.name, price: item.price, verification: 'concept' as const }))
 
 const spreads: BookSpreadData[] = [
-  { index: 0, pages: [{ kind: 'menu', pageNumber: 1, heading: 'Shrimp Sandwiches', items: menuItems.slice(0, 4), image: { src: '/assets/sandwiches/sandwich-1.webp', caption: 'Sandwich selection' } }, { kind: 'menu', pageNumber: 2, heading: 'Felleh Sandwiches', items: menuItems.slice(4, 8), image: { src: '/assets/sandwiches/sandwich-2.webp', caption: 'Sandwich selection' } }] },
-  { index: 1, pages: [{ kind: 'menu', pageNumber: 3, heading: 'Fresh Fish', items: conceptFishItems.slice(0, 4), image: { src: '/assets/seafood/fish2.webp', caption: 'Seafood selection' }, note: conceptFishNotice }, { kind: 'menu', pageNumber: 4, heading: 'Fresh Fish', items: conceptFishItems.slice(4, 8), image: { src: '/assets/seafood/fish4.webp', caption: 'Seafood selection' }, note: conceptFishNotice }] },
+  { index: 0, pages: [{ kind: 'menu', pageNumber: 1, heading: 'Shrimp Sandwiches', items: confirmedItems(menuItems.slice(0, 4)), image: { src: '/assets/sandwiches/sandwich-1.webp', caption: 'Sandwich selection' } }, { kind: 'menu', pageNumber: 2, heading: 'Felleh Sandwiches', items: confirmedItems(menuItems.slice(4, 8)), image: { src: '/assets/sandwiches/sandwich-2.webp', caption: 'Sandwich selection' } }] },
+  { index: 1, pages: [{ kind: 'menu', pageNumber: 3, heading: 'Fresh Fish', items: conceptItems(conceptFishItems.slice(0, 4)), image: { src: '/assets/seafood/fish2.webp', caption: 'Seafood selection' }, note: conceptFishNotice }, { kind: 'menu', pageNumber: 4, heading: 'Fresh Fish', items: conceptItems(conceptFishItems.slice(4, 8)), image: { src: '/assets/seafood/fish4.webp', caption: 'Seafood selection' }, note: conceptFishNotice }] },
   { index: 2, pages: [{ kind: 'photo', pageNumber: 5, heading: 'Fresh Fish Selection', image: { src: '/assets/seafood/fish4.webp', caption: 'Fresh Fish Selection' } }, { kind: 'photo', pageNumber: 6, heading: 'Fresh Fish Selection', image: { src: '/assets/seafood/fish5.webp', caption: 'Fresh Fish Selection' } }] },
-  { index: 3, pages: [{ kind: 'menu', pageNumber: 7, heading: 'Fish & Chips', items: bySection('Fish & Chips'), image: { src: '/assets/seafood/plate1.webp', caption: 'Seafood selection' }, note: conceptMenuNotice }, { kind: 'menu', pageNumber: 8, heading: 'Seafood Platters', items: bySection('Seafood Platters'), image: { src: '/assets/seafood/776442970_18066413636754697_7845254103303073647_n..jpg', caption: 'Seafood selection' }, note: conceptMenuNotice }] },
-  { index: 4, pages: [{ kind: 'menu', pageNumber: 9, heading: 'Sides', items: bySection('Sides'), note: conceptMenuNotice }, { kind: 'menu', pageNumber: 10, heading: 'Soft Drinks', items: bySection('Soft Drinks'), note: conceptMenuNotice }] },
+  { index: 3, pages: [{ kind: 'menu', pageNumber: 7, heading: 'Fish & Chips', items: conceptItems(bySection('Fish & Chips')), image: { src: '/assets/seafood/plate1.webp', caption: 'Seafood selection' }, note: conceptMenuNotice }, { kind: 'menu', pageNumber: 8, heading: 'Seafood Platters', items: conceptItems(bySection('Seafood Platters')), image: { src: '/assets/seafood/776442970_18066413636754697_7845254103303073647_n..jpg', caption: 'Seafood selection' }, note: conceptMenuNotice }] },
+  { index: 4, pages: [{ kind: 'menu', pageNumber: 9, heading: 'Sides', items: conceptItems(bySection('Sides')), note: conceptMenuNotice }, { kind: 'menu', pageNumber: 10, heading: 'Soft Drinks', items: conceptItems(bySection('Soft Drinks')), note: conceptMenuNotice }] },
 ]
 
 const journalPages = spreads.flatMap((spread) => spread.pages)
@@ -142,5 +147,6 @@ export function BookScene({ onClosed }: BookSceneProps) {
       <button type="button" onClick={() => setZoom(1)} disabled={flipState !== 'read' || zoom === 1} aria-label="Reset zoom"><RotateCcw aria-hidden="true" size={16} /></button>
     </div>
     <button className="book-scene__close" type="button" onClick={closeBook} disabled={!canNavigate}>Close the Captain&apos;s Log</button>
+    <FishingBoatCart />
   </section>
 }
