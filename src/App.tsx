@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { DiningSpace } from './components/DiningSpace'
 import { Footer } from './components/Footer'
@@ -10,9 +11,27 @@ import { Reviews } from './components/Reviews'
 import { StorySection } from './components/StorySection'
 import { Faq } from './components/Faq'
 import { VisitSection } from './components/VisitSection'
+import { WebsiteEntrance } from './components/WebsiteEntrance'
+
+const entranceSessionKey = 'the-ocean-entrance-seen'
+
+function shouldShowEntrance() {
+  if (window.location.pathname !== '/') return false
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  try {
+    if (sessionStorage.getItem(entranceSessionKey) || reducedMotion) {
+      sessionStorage.setItem(entranceSessionKey, 'true')
+      return false
+    }
+  } catch {
+    return !reducedMotion
+  }
+  return true
+}
 
 function App() {
   const [pathname, setPathname] = useState(() => window.location.pathname)
+  const [showEntrance, setShowEntrance] = useState(shouldShowEntrance)
   const previousPathnameRef = useRef(window.location.pathname)
 
   const restoreMenuTeaser = useCallback(() => {
@@ -54,6 +73,11 @@ function App() {
     restoreMenuTeaser()
   }, [restoreMenuTeaser])
 
+  const dismissEntrance = useCallback(() => {
+    try { sessionStorage.setItem(entranceSessionKey, 'true') } catch { /* Session storage can be unavailable in privacy modes. */ }
+    setShowEntrance(false)
+  }, [])
+
   if (pathname === '/menu') return <MenuPage onClose={closeMenu} />
 
   return (
@@ -73,6 +97,7 @@ function App() {
         <VisitSection />
       </main>
       <Footer />
+      <AnimatePresence>{showEntrance && <WebsiteEntrance onDismiss={dismissEntrance} />}</AnimatePresence>
     </div>
   )
 }
