@@ -3,6 +3,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 import { Reveal } from './Reveal'
 import { business } from '../data/business'
+import { CinematicFeature } from './CinematicFeature'
 
 export function StorySection() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -25,6 +26,7 @@ export function StorySection() {
         </figure>
         <Reveal className="story__note" delay={0.15}><span aria-hidden="true">01</span><p>Explore the gallery, then open the Captain&apos;s Log to browse the menu.</p></Reveal>
       </div>
+      <CinematicFeature className="story__motion-feature" label="Fish and chips" src="/assets/higgsfield/fish-and-chips.mp4" />
     </section>
   )
 }

@@ -5,6 +5,7 @@ import type { SyntheticEvent } from 'react'
 import { heroPosterSrc, heroVideoSrc } from '../data/media'
 import { CaptainsLog } from './CaptainsLog'
 import { Reveal } from './Reveal'
+import { CinematicFeature } from './CinematicFeature'
 
 interface MenuPreviewProps {
   onOpenMenu: () => void
@@ -64,6 +65,7 @@ export function MenuPreview({ onOpenMenu }: MenuPreviewProps) {
         <div className="menu-preview__overlay" aria-hidden="true" />
         <div className="menu-preview__art">
           <CaptainsLog onOpen={onOpenMenu} />
+          <CinematicFeature className="menu-preview__motion-accent" label="Shrimp sandwich" src="/assets/higgsfield/shrimp-sandwich.mp4" />
         </div>
         <Reveal className="menu-preview__content">
           <p className="eyebrow">The Captain&apos;s Log</p>
