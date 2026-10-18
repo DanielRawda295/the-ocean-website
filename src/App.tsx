@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { DiningSpace } from './components/DiningSpace'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
@@ -13,6 +13,7 @@ import { VisitSection } from './components/VisitSection'
 
 function App() {
   const [pathname, setPathname] = useState(() => window.location.pathname)
+  const previousPathnameRef = useRef(window.location.pathname)
 
   const restoreMenuTeaser = useCallback(() => {
     window.requestAnimationFrame(() => {
@@ -23,8 +24,11 @@ function App() {
 
   useEffect(() => {
     const handlePopState = () => {
-      setPathname(window.location.pathname)
-      if (window.location.pathname === '/') restoreMenuTeaser()
+      const nextPathname = window.location.pathname
+      const returnedFromMenu = previousPathnameRef.current === '/menu' && nextPathname === '/'
+      previousPathnameRef.current = nextPathname
+      setPathname(nextPathname)
+      if (returnedFromMenu) restoreMenuTeaser()
     }
 
     window.addEventListener('popstate', handlePopState)
@@ -33,6 +37,7 @@ function App() {
 
   const openMenu = useCallback(() => {
     window.history.pushState({ captainsLogOrigin: true }, '', '/menu')
+    previousPathnameRef.current = '/menu'
     setPathname('/menu')
     window.scrollTo({ top: 0, behavior: 'auto' })
   }, [])
@@ -44,6 +49,7 @@ function App() {
     }
 
     window.history.replaceState({}, '', '/#menu-preview')
+    previousPathnameRef.current = '/'
     setPathname('/')
     restoreMenuTeaser()
   }, [restoreMenuTeaser])

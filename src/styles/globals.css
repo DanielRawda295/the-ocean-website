@@ -4,7 +4,7 @@
 
 :root { color: var(--navy); background: var(--cream); font-family: var(--font-ui); font-synthesis: none; text-rendering: optimizeLegibility; }
 * { box-sizing: border-box; } html { scroll-behavior: smooth; } body { min-width: 320px; min-height: 100vh; margin: 0; background: var(--cream); } button, input, textarea, select { font: inherit; } a { color: inherit; } img { display: block; max-width: 100%; } :focus-visible { outline: 3px solid var(--coral); outline-offset: 4px; }
-[id] { scroll-margin-top: 5.75rem; }
+:root { --site-header-height: 4.85rem; --section-navigation-gap: clamp(.75rem, 1.5vw, 1.25rem); }.section h2, .site-footer .footer__top { scroll-margin-top: calc(var(--site-header-height) + var(--section-navigation-gap)); }
 .site-shell { min-height: 100vh; overflow: clip; }.page-container { width: min(100% - 2rem, 75rem); margin-inline: auto; }.section { padding-block: clamp(5.5rem, 11vw, 10rem); }.skip-link { position: fixed; z-index: 100; top: 1rem; left: 1rem; transform: translateY(-200%); padding: .75rem 1rem; color: var(--cream); background: var(--navy); text-decoration: none; }.skip-link:focus { transform: translateY(0); }
 .concept-notice { display: flex; position: relative; z-index: 30; min-height: 2.35rem; align-items: center; justify-content: center; gap: .45rem; padding: .5rem 1rem; color: var(--cream); background: var(--navy); font-size: .65rem; font-weight: 700; letter-spacing: .13em; line-height: 1.3; text-align: center; text-transform: uppercase; }
 
