@@ -114,8 +114,9 @@ export function BookScene({ onClosed }: BookSceneProps) {
     <section className={`book-scene book-scene--${bookState}`} aria-labelledby="captains-log-heading">
       <div className="book-scene__atmosphere" aria-hidden="true" />
       <div className="book-scene__object">
+        <div className="book-back-cover" aria-hidden="true" />
         <div className="book-scene__spine" aria-hidden="true" />
-        <div className="book-scene__papers" aria-hidden={bookState === 'closed' || undefined}>
+        <div className="book-scene__papers">
           {bookState === 'turning' && pendingSpreadIndex !== null ? (
             <div className="book-page-layers" aria-hidden="true">
               <div className="book-page-layer book-page-layer--left"><JournalPage page={turnDirection === 'next' ? outgoingSpread.pages[0] : incomingSpread.pages[0]} /></div>
@@ -125,16 +126,18 @@ export function BookScene({ onClosed }: BookSceneProps) {
         </div>
 
         <motion.div
-          className="book-cover-3d"
+          className="book-cover-hinge"
           initial={false}
           animate={{ rotateY: coverRotation }}
           transition={{ duration: coverDuration, ease: [0.18, 0.8, 0.24, 1] }}
           onAnimationComplete={handleCoverComplete}
           aria-hidden="true"
         >
-          <div className="book-cover-3d__outside"><span className="book-cover-3d__border" /><img alt="" src="/assets/brand/the-ocean-logo.jpg" /><span>The Ocean</span><strong>The Captain&apos;s<br />Log</strong><Compass size={42} strokeWidth={1} /></div>
-          <div className="book-cover-3d__inside"><span className="book-cover-3d__border" /><Compass size={72} strokeWidth={.8} /><span>Captain&apos;s Log</span><small>The Ocean</small></div>
-          <span className="book-cover-3d__shadow" />
+          <div className="book-cover-3d">
+            <div className="book-cover-3d__outside"><span className="book-cover-3d__border" /><img alt="" src="/assets/brand/the-ocean-logo.jpg" /><span>The Ocean</span><strong>The Captain&apos;s<br />Log</strong><Compass size={42} strokeWidth={1} /></div>
+            <div className="book-cover-3d__inside"><span className="book-cover-3d__border" /><Compass size={72} strokeWidth={.8} /><span>Captain&apos;s Log</span><small>The Ocean</small></div>
+            <span className="book-cover-3d__shadow" />
+          </div>
         </motion.div>
 
         {bookState === 'turning' && pendingSpreadIndex !== null && (

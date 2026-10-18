@@ -14,14 +14,14 @@
 /* This object never moves. Its midpoint is the permanent physical hinge. */
 .book-scene__object { position: relative; z-index: 1; order: 2; width: min(94vw, 66rem); height: clamp(24rem, 35vw, 29rem); margin-inline: auto; perspective: 2200px; transform-style: preserve-3d; }
 .book-scene__object::after { position: absolute; z-index: -1; right: 7%; bottom: 2%; left: 7%; height: 13%; border-radius: 50%; background: rgba(0, 8, 11, .52); filter: blur(18px); content: ''; }
-.book-scene__spine { position: absolute; z-index: 9; top: 0; bottom: 0; left: calc(50% - .23rem); width: .46rem; border-radius: .3rem; background: linear-gradient(90deg, #33291f, #c3a56e 50%, #372b20); box-shadow: inset 1px 0 rgba(255,255,255,.28), 0 0 .45rem rgba(0,0,0,.36); pointer-events: none; }
-.book-scene__papers { position: absolute; z-index: 3; inset: 0; }
-.book-scene--closed .book-scene__papers { visibility: hidden; }
+.book-back-cover { position: absolute; z-index: 1; inset: 0; border: 1px solid color-mix(in srgb, var(--gold) 52%, transparent); background: linear-gradient(135deg, #263f4c, #11232d 68%, #0c1c25); box-shadow: inset 0 0 0 .5rem rgba(185,154,105,.1), 0 1.7rem 3rem rgba(0,0,0,.34); transform: translateZ(-.18rem); transform-style: preserve-3d; }
+.book-scene__spine { position: absolute; z-index: 5; top: 0; bottom: 0; left: calc(50% - .23rem); width: .46rem; border-radius: .3rem; background: linear-gradient(90deg, #33291f, #c3a56e 50%, #372b20); box-shadow: inset 1px 0 rgba(255,255,255,.28), 0 0 .45rem rgba(0,0,0,.36); transform: translateZ(.24rem); pointer-events: none; }
+.book-scene__papers { position: absolute; z-index: 2; inset: 0; transform: translateZ(.08rem); transform-style: preserve-3d; }
 .book-spread { display: grid; width: 100%; height: 100%; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow: hidden; border: 1px solid color-mix(in srgb, var(--gold) 52%, transparent); background: #d8d0bc; box-shadow: 0 1.7rem 3rem rgba(0, 0, 0, .38); }
 
-/* The cover is exactly the right page width; Motion owns its rotateY only. */
-.book-cover-3d { position: absolute; z-index: 8; top: 0; bottom: 0; left: 50%; width: 50%; transform-origin: left center; transform-style: preserve-3d; will-change: transform; }
-.book-scene--open .book-cover-3d, .book-scene--turning .book-cover-3d { z-index: 2; }
+/* Motion owns the hinge rotation. The cover itself carries a fixed physical depth. */
+.book-cover-hinge { position: absolute; z-index: 4; top: 0; bottom: 0; left: 50%; width: 50%; transform-origin: left center; transform-style: preserve-3d; will-change: transform; }
+.book-cover-3d { position: absolute; inset: 0; transform: translateZ(.2rem); transform-style: preserve-3d; }
 .book-cover-3d__outside, .book-cover-3d__inside { display: grid; position: absolute; inset: 0; align-content: center; justify-items: center; gap: clamp(.45rem, 1.2vw, .85rem); overflow: hidden; border: 1px solid color-mix(in srgb, var(--gold) 82%, transparent); padding: clamp(1.25rem, 4vw, 3.2rem); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .book-cover-3d__outside { color: var(--gold); background: radial-gradient(circle at 77% 12%, rgba(185, 154, 105, .2), transparent 28%), repeating-linear-gradient(108deg, rgba(255,255,255,.03) 0 1px, transparent 1px 5px), linear-gradient(135deg, #385667, #162a35 65%, #0d1d26); box-shadow: inset 0 0 0 .55rem rgba(185, 154, 105, .12), .55rem .55rem 1rem rgba(0,0,0,.32); }
 .book-cover-3d__inside { color: var(--gold); background: radial-gradient(circle at 14% 12%, rgba(255,255,255,.64), transparent 35%), repeating-linear-gradient(0deg, rgba(82,62,34,.025) 0 1px, transparent 1px 4px), #e9e2d0; box-shadow: inset .75rem 0 1.2rem rgba(67,49,21,.12); transform: rotateY(180deg); }
