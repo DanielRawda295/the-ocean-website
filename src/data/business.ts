@@ -9,5 +9,6 @@ export const business = {
     instagram: 'https://www.instagram.com/theocean.lb/',
     tiktok: 'https://www.tiktok.com/@the_ocean025',
   },
-  walkthroughVideoUrl: undefined as string | undefined,
+  walkthroughVideoUrl: '/assets/walkthrough/walkthrough.mp4',
+  walkthroughPosterUrl: '/assets/walkthrough/walkthrough-poster.webp',
 } as const

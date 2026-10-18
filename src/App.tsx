@@ -12,6 +12,7 @@ import { StorySection } from './components/StorySection'
 import { Faq } from './components/Faq'
 import { VisitSection } from './components/VisitSection'
 import { WebsiteEntrance } from './components/WebsiteEntrance'
+import { WalkthroughDialog } from './components/WalkthroughDialog'
 
 const entranceSessionKey = 'the-ocean-entrance-seen'
 
@@ -32,6 +33,7 @@ function shouldShowEntrance() {
 function App() {
   const [pathname, setPathname] = useState(() => window.location.pathname)
   const [showEntrance, setShowEntrance] = useState(shouldShowEntrance)
+  const [isWalkthroughOpen, setIsWalkthroughOpen] = useState(false)
   const previousPathnameRef = useRef(window.location.pathname)
 
   const restoreMenuTeaser = useCallback(() => {
@@ -78,6 +80,9 @@ function App() {
     setShowEntrance(false)
   }, [])
 
+  const openWalkthrough = useCallback(() => setIsWalkthroughOpen(true), [])
+  const closeWalkthrough = useCallback(() => setIsWalkthroughOpen(false), [])
+
   if (pathname === '/menu') return <MenuPage onClose={closeMenu} />
 
   return (
@@ -87,17 +92,18 @@ function App() {
       </a>
       <Header />
       <main id="main-content" tabIndex={-1}>
-        <Hero />
+        <Hero onOpenWalkthrough={openWalkthrough} />
         <StorySection />
         <PhotoGallery />
         <MenuPreview onOpenMenu={openMenu} />
         <Reviews />
         <Faq />
-        <DiningSpace />
+        <DiningSpace onOpenWalkthrough={openWalkthrough} />
         <VisitSection />
       </main>
       <Footer />
       <AnimatePresence>{showEntrance && <WebsiteEntrance onDismiss={dismissEntrance} />}</AnimatePresence>
+      {isWalkthroughOpen && <WalkthroughDialog onClose={closeWalkthrough} />}
     </div>
   )
 }
