@@ -113,14 +113,14 @@ export function BookScene({ onClosed }: BookSceneProps) {
         <div className="book-scene__spine" aria-hidden="true" />
         <div className="book-scene__page-stack book-scene__page-stack--left" aria-hidden="true" />
         <div className="book-scene__page-stack book-scene__page-stack--right" aria-hidden="true" />
-        {bookState !== 'closed' && <div className="book-scene__papers">
+        <div className="book-scene__papers" aria-hidden={bookState === 'closed' || undefined}>
           {bookState === 'turning' && pendingSpreadIndex !== null ? (
             <div className="book-page-layers" aria-hidden="true">
               <div className="book-page-layer book-page-layer--left"><JournalPage page={turnDirection === 'next' ? outgoingSpread.pages[0] : incomingSpread.pages[0]} /></div>
               <div className="book-page-layer book-page-layer--right"><JournalPage page={turnDirection === 'next' ? incomingSpread.pages[1] : outgoingSpread.pages[1]} /></div>
             </div>
           ) : <BookSpread key={`base-${outgoingSpread.index}`} spread={outgoingSpread} labelledBy="captains-log-heading" />}
-        </div>}
+        </div>
 
         <motion.div
           className="book-cover-3d"
