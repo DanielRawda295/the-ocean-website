@@ -13,6 +13,7 @@ import { Faq } from './components/Faq'
 import { VisitSection } from './components/VisitSection'
 import { WebsiteEntrance } from './components/WebsiteEntrance'
 import { WalkthroughDialog } from './components/WalkthroughDialog'
+import { CinematicFeature } from './components/CinematicFeature'
 
 const entranceSessionKey = 'the-ocean-entrance-seen'
 
@@ -95,6 +96,15 @@ function App() {
         <Hero onOpenWalkthrough={openWalkthrough} />
         <StorySection />
         <PhotoGallery />
+        <section className="underwater-showcase" aria-label="An underwater glimpse">
+          <div className="page-container underwater-showcase__inner">
+            <div className="underwater-showcase__heading">
+              <p className="eyebrow">Beneath the waves</p>
+              <h2>A glimpse beneath the surface.</h2>
+            </div>
+            <CinematicFeature className="underwater-showcase__video" label="Underwater world" src="/assets/higgsfield/underwater-fish.mp4" />
+          </div>
+        </section>
         <MenuPreview onOpenMenu={openMenu} />
         <Reviews />
         <Faq />

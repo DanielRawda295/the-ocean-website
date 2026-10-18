@@ -40,3 +40,26 @@
 .website-entrance { display: grid; position: fixed; z-index: 200; inset: 0; place-items: center; overflow: hidden; color: var(--cream); background: radial-gradient(circle at 75% 22%, #244e61 0, #102a38 28%, var(--navy) 67%); isolation: isolate; }.website-entrance::before { position: absolute; z-index: -1; inset: 0; background: linear-gradient(115deg, rgba(4,17,25,.8), rgba(8,30,40,.12) 58%, rgba(3,16,23,.52)); content: ''; }.website-entrance__video { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .45s ease; }.website-entrance__video--ready { opacity: .72; }.website-entrance__water { position: absolute; z-index: -1; right: -12vw; bottom: -7vw; left: -12vw; height: min(39vw,23rem); opacity: .75; transform: rotate(-3deg); }.website-entrance__water span { position: absolute; right: 0; left: 0; height: 42%; border-top: 1px solid color-mix(in srgb,var(--gold) 40%,transparent); border-radius: 50%; animation: entrance-wave 3.8s ease-in-out infinite alternate; }.website-entrance__water span:nth-child(1) { top: 4%; }.website-entrance__water span:nth-child(2) { top: 28%; animation-delay: -1.3s; }.website-entrance__water span:nth-child(3) { top: 52%; animation-delay: -2.1s; }.website-entrance__fallback { position: absolute; z-index: -1; bottom: clamp(5rem,14vh,9rem); left: clamp(-2rem,10vw,12rem); width: min(42vw,25rem); animation: entrance-boat 3.4s cubic-bezier(.32,.02,.31,1) infinite alternate; }.website-entrance__boat { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 1.25rem 1.3rem rgba(0,0,0,.3)); }.website-entrance__boat path { stroke-linecap: round; stroke-linejoin: round; }.website-entrance__boat-wave { fill: none; stroke: var(--coral); stroke-width: 2; }.website-entrance__boat-hull { fill: var(--gold); stroke: var(--gold); }.website-entrance__boat-mast { fill: none; stroke: var(--cream); stroke-width: 3; }.website-entrance__boat-sail { fill: color-mix(in srgb,var(--cream) 84%,transparent); stroke: var(--cream); stroke-width: 1.5; }.website-entrance__boat-sail--small { fill: color-mix(in srgb,var(--gold) 62%,transparent); }.website-entrance__brand { display: grid; position: relative; z-index: 1; justify-items: center; gap: .7rem; padding: 2rem; text-align: center; }.website-entrance__brand::before { position: absolute; inset: .35rem; border: 1px solid color-mix(in srgb,var(--gold) 44%,transparent); content: ''; }.website-entrance__brand img { position: relative; width: clamp(4.4rem,9vw,6.5rem); height: clamp(4.4rem,9vw,6.5rem); border-radius: 50%; object-fit: cover; box-shadow: 0 .65rem 1.3rem rgba(0,0,0,.2); }.website-entrance__brand p,.website-entrance__brand span { position: relative; margin: 0; }.website-entrance__brand p { color: var(--cream); font: 400 clamp(3rem,8vw,6.5rem)/.8 var(--font-display); letter-spacing: -.07em; }.website-entrance__brand span { color: var(--gold); font: 700 clamp(.55rem,1.25vw,.72rem)/1.4 var(--font-ui); letter-spacing: .14em; text-transform: uppercase; }.website-entrance__skip { position: absolute; z-index: 2; top: clamp(1rem,3vw,2rem); right: clamp(1rem,3vw,2rem); border: 1px solid color-mix(in srgb,var(--gold) 70%,transparent); padding: .75rem .9rem; color: var(--cream); background: rgba(5,21,29,.35); font: 700 .62rem/1 var(--font-ui); letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }.website-entrance__skip:hover { color: var(--navy); background: var(--gold); } @keyframes entrance-wave { from { transform: translateX(-2%) scaleX(.98); } to { transform: translateX(2%) scaleX(1.03); } } @keyframes entrance-boat { from { transform: translate3d(0,0,0) rotate(-1.5deg); } to { transform: translate3d(min(32vw,25rem),-.5rem,0) rotate(1.5deg); } }
 @media (max-width: 30rem) { .website-entrance__fallback { width: 13rem; bottom: 6rem; }.website-entrance__brand { padding: 1.5rem 1.25rem; }.website-entrance__brand p { font-size: 3.3rem; } }
 @media (prefers-reduced-motion: reduce) { .website-entrance__water span,.website-entrance__fallback { animation: none; }.website-entrance__video { transition: none; } }
+
+/* Layout refinement: the shrimp reveal sits below the menu book, not in a tiny corner. */
+.menu-preview__art { gap: clamp(1.25rem, 3vw, 2rem); }
+.menu-preview__motion-accent {
+  position: relative;
+  inset: auto;
+  z-index: 1;
+  width: min(100%, 23rem);
+  max-width: 100%;
+  justify-self: center;
+  margin: 0;
+  pointer-events: none;
+}
+.menu-preview__motion-accent figcaption { right: .85rem; bottom: .75rem; left: .85rem; font-size: .54rem; }
+.menu-preview__motion-accent figcaption span { display: inline; }
+
+/* Underwater clip: dedicated, visible editorial break between gallery and menu. */
+.underwater-showcase { padding: clamp(3.5rem, 7vw, 6rem) 0; background: var(--navy); color: var(--cream); }
+.underwater-showcase__inner { display: grid; align-items: center; gap: clamp(1.5rem, 4vw, 4rem); }
+.underwater-showcase__heading h2 { max-width: 12ch; color: var(--cream); font-size: clamp(2.7rem, 5vw, 4.5rem); }
+.underwater-showcase__video { width: 100%; max-width: 52rem; justify-self: center; }
+@media (min-width: 48rem) { .underwater-showcase__inner { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); } }
+@media (max-width: 47.99rem) { .menu-preview__motion-accent { width: min(100%, 21rem); } }
