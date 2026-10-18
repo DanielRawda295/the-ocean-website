@@ -38,6 +38,12 @@ export function MenuPreview({ onOpenMenu }: MenuPreviewProps) {
     if (code === MediaError.MEDIA_ERR_DECODE || code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) setVideoUnavailable(true)
   }
 
+  const logVideoEvent = (event: SyntheticEvent<HTMLVideoElement>) => {
+    if (!import.meta.env.DEV) return
+    const video = event.currentTarget
+    console.debug('[The Ocean menu teaser video]', event.type, { paused: video.paused, ended: video.ended, readyState: video.readyState, networkState: video.networkState, currentTime: video.currentTime, duration: video.duration, errorCode: video.error?.code })
+  }
+
   useEffect(() => {
     if (!isOpeningFromCta) return undefined
 
@@ -50,7 +56,7 @@ export function MenuPreview({ onOpenMenu }: MenuPreviewProps) {
       <div className={`page-container menu-preview__panel${isOpeningFromCta ? ' menu-preview__panel--opening' : ''}`}>
         <div className="menu-preview__media" aria-hidden="true">
           {showVideo ? (
-            <video ref={videoRef} autoPlay loop muted onError={handleVideoError} playsInline poster={heroPosterSrc} preload="metadata">
+            <video ref={videoRef} autoPlay loop muted onError={handleVideoError} onPlaying={logVideoEvent} onPause={logVideoEvent} onWaiting={logVideoEvent} onStalled={logVideoEvent} onEnded={logVideoEvent} onTimeUpdate={logVideoEvent} playsInline poster={heroPosterSrc} preload="metadata">
               <source src={heroVideoSrc} type="video/mp4" />
             </video>
           ) : <img alt="" decoding="async" loading="lazy" src={heroPosterSrc} />}

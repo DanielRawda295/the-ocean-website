@@ -57,6 +57,8 @@ const menuImageSources = spreads.flatMap((spread) => spread.pages.flatMap((page)
 
 export function BookScene({ onClosed }: BookSceneProps) {
   const shouldReduceMotion = useReducedMotion()
+  const requestedCoverAngle = import.meta.env.DEV ? Number(new URLSearchParams(window.location.search).get('coverAngle')) : Number.NaN
+  const debugCoverAngle = [0, -45, -90, -135, -180].includes(requestedCoverAngle) ? requestedCoverAngle : null
   const [bookState, setBookState] = useState<BookState>('closed')
   const [spreadIndex, setSpreadIndex] = useState(0)
   const [pendingSpreadIndex, setPendingSpreadIndex] = useState<number | null>(null)
@@ -77,6 +79,7 @@ export function BookScene({ onClosed }: BookSceneProps) {
   }, [shouldReduceMotion])
 
   const coverDuration = shouldReduceMotion ? 0 : bookState === 'closing' ? 2 : 2.35
+  const coverRotation = debugCoverAngle ?? (bookState === 'closed' || bookState === 'closing' ? 0 : -180)
   const turnDuration = shouldReduceMotion ? 0 : 1
   const outgoingSpread = spreads[spreadIndex]
   const incomingSpread = pendingSpreadIndex === null ? outgoingSpread : spreads[pendingSpreadIndex]
@@ -123,7 +126,7 @@ export function BookScene({ onClosed }: BookSceneProps) {
         <motion.div
           className="book-cover-3d"
           initial={false}
-          animate={{ rotateY: bookState === 'closed' || bookState === 'closing' ? 0 : -180 }}
+          animate={{ rotateY: coverRotation }}
           transition={{ duration: coverDuration, ease: [0.18, 0.8, 0.24, 1] }}
           onAnimationComplete={handleCoverComplete}
           aria-hidden="true"
